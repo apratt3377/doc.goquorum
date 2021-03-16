@@ -149,9 +149,21 @@ and tenant scope which has the following URL-based syntax:
 
 Specific scope details here...
 ```text
-    "private://0x0/_/contracts?owned.eoa=0x0&from.tm=[tm-pubkey]"
+    "psi://[PSI]?self.eoa=0x0&node.eoa=0x0"
 ```
 
+In the syntax, `PSI` is the URL-encoded value of the PSI, which represents the private state the tenant has access to.
+
+For example, for a client that has access to two private states `PS1` and `PS2`,
+an authorization server operator would setup and grant the following scopes to the client:
+
+```text
+    psi://PS1?self.eoa=0x0&node.eoa
+    psi://PS2?self.eoa=0x0&node.eoa
+```
+
+A client presenting an access token containing the above scopes has full access (read/write/create)
+to private contracts on private states `PS1` and `PS2` using any self or node managed Ethereum Accounts.
 
 <!--links-->
 [Multiple Private States]: ../../HowTo/Use/MultiplePrivateStates.md

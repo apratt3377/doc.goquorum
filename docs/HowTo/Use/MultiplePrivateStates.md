@@ -16,61 +16,50 @@ only be protected by one authorization server.
 
 This section outlines an example of how multi-tenancy can be set up. A network operator must
 configure [scope values] for each user in an authorization server, for each tenant.
-This example network contains 4 nodes, 2 of which are multi-tenant nodes. The multi-tenant nodes are
-`Node1` and `Node2`.
+This example network contains 4 nodes.
+Multi-tenant `Node1` is shared between tenant `J` and `G` (`isMPS=true`)
+Standalone `Node2` is used by tenant `D` alone (`isMPS=false`)
 
 !!! note
     A node consists of GoQuorum client and Tessera Private Transaction Manager.
 
     We name Privacy Manager key pairs for easy referencing, for example: `J_K1` or `G_K1`. In
     reality, their values are the pubic keys used in `privateFor` and `privateFrom` fields.
-
-Privacy Manager key pairs are allocated as follows:
-
-* `Node1` manages `J_K1`, `J_K2`, `G_K1`, and `G_K3`
-* `Node2` manages `G_K2` and `D_K1`.
+    
 
 Tenants are assigned to multi-tenant nodes as follows:
 
 * `J Organization` owns `J_K1` and `J_K2`, and it's tenancy is on `Node1`
-* `G Organization` owns `G_K1`, `G_K2`, and `G_K3`, and its tenancy is on `Node1` and `Node2`
-* `D Organization` owns `D_K1`, and its tenancy is on `Node2`.
+* `G Organization` owns `G_K1` and `G_K2`, and it's tenancy is on `Node1`
+* `D Organization` owns `D_K1`, and it's tenancy is on `Node2`.
 
-In practice, `J Organization`, `G Organization` and `D Organization` may decide to allocate keys to
+In practice, `J Organization` and `G Organization` may decide to allocate keys to
 their departments, therefore the security model could be as below:
 
 * `J Organization` has:
-    * `J Investment` owning `J_K1`
-    * `J Settlement` owning `J_K2`
-    * `J Audit` having READ access to contracts in which `J_K1` and `J_K2` are participants
+    * `J Investment` has access to `J` tenancy using any self-managed Ethereum Accounts
+    * `J Settlement` has access to `J` tenancy using node-managed Ethereum Account `J_ACC1` and a self-managed `Wallet1`
 * `G Organization` has:
-    * `G Investment` owning `G_K1`
-    * `G Settlement` owning `G_K2`
-    * `G Research` owning `G_K3`
-    * `G Audit` having READ access to contracts in which `G_K1`, `G_K2` and `G_K3` are participants
-* `D Organization` has:
-    * `D Investment` owning `D_K1`
+    * `G Investment` has access to `G` tenancy using any self-managed Ethereum Accounts
+    * `G Settlement` has access to `G` tenancy using node-managed Ethereum Account `G_ACC1` and self-managed `Wallet2`
 
 Each authorization server has its own configuration steps and client onboarding process.
 A network operator's responsibility is to implement the above security model in the authorization
-server by defining [custom scopes](../../Concepts/Multitenancy/Overview.md#access-token-scope) and
+server by defining [custom scopes] and
 granting them to target clients.
 
-A custom scope representing __`J Investment` owning `J_K1`__,  
-where `J_K1=8SjRHlUBe4hAmTk3KDeJ96RhN+s10xRrHDrxEi1O5W0=`  
-would be:
+A custom scope representing __`J Investment`__,  
+would be
 
 ```text
-private://0x0/_/contracts?owned.eoa=0x0&from.tm=8SjRHlUBe4hAmTk3KDeJ96RhN%2bs10xRrHDrxEi1O5W0%3d
+psi://J?self.eoa=0x0
 ```
 
-Custom scopes representing __`J Audit` having READ access to contracts in which `J_K1` and `J_K2` are participants__,  
-where `J_K1=8SjRHlUBe4hAmTk3KDeJ96RhN+s10xRrHDrxEi1O5W0=`  
-and `J_K2=2T7xkjblN568N1QmPeElTjoeoNT4tkWYOJYxSMDO5i0=`,  
+Custom scopes representing __`G Settlement`__,  
 would be:
 
 ```text
-private://0x0/read/contracts?owned.eoa=0x0&from.tm=8SjRHlUBe4hAmTk3KDeJ96RhN%2bs10xRrHDrxEi1O5W0%3d&from.tm=2T7xkjblN568N1QmPeElTjoeoNT4tkWYOJYxSMDO5i0%3d
+psi://G?node.eoa=G_ACC1&self.eoa=Wallet2
 ```
 
 !!! important
@@ -84,29 +73,31 @@ would be the following:
 
 ```text
 rpc://eth_*
-private://0x0/_/contracts?owned.eoa=0x0&from.tm=8SjRHlUBe4hAmTk3KDeJ96RhN%2bs10xRrHDrxEi1O5W0%3d
+psi://J?self.eoa=0x0
 ```
 
 ### Tessera Setup
 
-In addition to configuring the Authorization Server, the Tessera config file must be updated to contain residentGroups.
+In addition to configuring the Authorization Server, the Tessera config file must be updated to contain residentGroups for the multi-tenant nodes.
 
-In the above setup, the residentGroup configuration would be:
+In the above setup, the residentGroup configuration of `Node1` would be:
 
 ``` json
 "residentGroups": [
  {
    "name": "PS1",
-   "members": ["publicKey1", "publicKey2"],
-   "description": "Private state 1"
+   "members": ["J_K1", "J_K2"],
+   "description": "Private state of J Organization"
  },
  {
    "name": "PS2",
-   "members": ["publicKey3", "publicKey4"],
-   "description": "Private State 2"
+   "members": ["G_K1", "G_K2"],
+   "description": "Private State of G Organization"
  }
 ]
 ```
+
+`Node2` does not need to add residentGroups to it's Tessera config file because it has only one tenant, and therefore all of it's keys will be added to a default "private" group automatically.
 
 During Tessera startup, residentGroups are validated to check that each key is part of a single resident group.
 If a key is not configured to be a part of a residentGroup it is automatically added to the default "private" resident group.
@@ -169,5 +160,6 @@ Returns the private state the user is operating on
 
 
 <!--links-->
-[scope values]: ../../Concepts/Multitenancy/Overview.md#access-token-scope
+[scope values]: ../../Concepts/MultiplePrivateStates/Overview.md#access-token-scope
+[custom scopes]: ../../Concepts/MultiplePrivateStates/Overview.md#access-token-scope
 [Tessera]: https://docs.tessera.consensys.net/en/stable/
