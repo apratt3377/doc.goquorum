@@ -8,7 +8,54 @@ run and scale as more tenants join the network.
 
 The public state remains available publicly to all tenants and private states are logically segregated.
 
-Sample diagram of tenants with multiple private states here and use of EAS
+```plantuml
+skinparam shadowing false
+skinparam monochrome true
+skinparam nodesep 20
+skinparam ranksep 20
+skinparam database {
+StereotypeFontSize 10
+}
+scale 1.0
+
+left to right direction
+
+rectangle "<&people> J Organization" as ta
+rectangle "<&people> G Organization" as tb
+
+node "GoQuorum" as goquorum {
+  rectangle "<size:16><&shield></size>\n\nA\n\nP\n\nI\n" as api
+  rectangle "<size:16><&shield></size>\n\nE\n\nV\n\nM\n" as evm
+  together {
+    database "Public State" as publicstate {
+    }
+    database "<size:16><&lock-locked></size> Private State" << J Organization >> as privatestateJ {
+    }
+    database "<size:16><&lock-locked></size> Private State" << G Organization >> as privatestateG {
+    }
+  }
+}
+
+api -[hidden]- evm
+evm -[hidden]- publicstate
+
+rectangle "<b>Tessera</b>\n\n<&key> J Organization\n<&key> G Organization" as tessera
+
+rectangle "<size:18><&cog></size> Authorization Server" as authServer
+
+
+ta -- api: <&document> JSON RPC
+tb -- api: <&document> JSON RPC
+
+authServer -- ta
+authServer -- tb
+
+goquorum -- tessera
+```
+
+In this scenario, an organization represents a tenant with multiple departments, and
+users within the departments. Each tenant operates on it's own private state. Each user in an organization owns one or more privacy manager key pairs that allows them to operate on their organization's private state. A network
+operator administers entitlements and private state access for each organization using the Authorization Server.
 
 [JSON RPC security](../../HowTo/Use/JSON-RPC-API-Security.md) features are used to manage a users access to a private state. The [Authentication Server setup] controls this access.
 
