@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-* Set isMPS to true in Quorum genesis????
+* Set `isMPS` to true in GoQuorum genesis
 * Configure the [JSON RPC Security plugin](JSON-RPC-API-Security.md#configuration)
 * Use [Tessera] version `20.10.3` or later and configure `residentGroups`
 
