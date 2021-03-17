@@ -136,5 +136,5 @@ to private contracts on private states `PS1` and `PS2` using any self or node ma
 
 <!--links-->
 [Multi-tenancy via Multiple Private States]: ../../HowTo/Use/MultitenancyMPS.md
-[configuration changes needed for MPS]: Multitenancy.md#Configuration-Changes
-[MPS enabled]: Multitenancy.md#Enable-Multiple-Private-States
+[configuration changes needed for MPS]: MultiplePrivateStates.md#Configuration-Changes
+[MPS enabled]: MultiplePrivateStates.md#Enable-Multiple-Private-States
