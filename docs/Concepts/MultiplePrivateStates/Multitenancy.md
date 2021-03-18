@@ -100,8 +100,8 @@ Security plugin.
     
 ## Enterprise Authorization Server
 
-To support Multi-tenancy, an Authorization Server will need to be configured. The authorization server has the ability to grant private state access to clients via a private state identifier
-View [Multi-tenancy via Multiple Private States] for more information on how to set up the Authorization server and configure a multi-tenant network
+To support Multi-tenancy, an Authorization Server will need to be configured. The Authorization Server has the ability to grant private state access to clients via a private state identifier.
+View [Multi-tenancy via Multiple Private States] for more information on how to set up the Authorization server and configure a Multi-tenant network.
 
 ### Access Token Scope
 

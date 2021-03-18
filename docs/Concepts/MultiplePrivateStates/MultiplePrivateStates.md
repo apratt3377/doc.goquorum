@@ -1,6 +1,6 @@
 # Multiple Private States
 
-Multiple Private States is a feature that allows a GoQuorum node to have more than one private state. The private states are separated logically in the shared database.  This functionality lays the foundation for [supporting multiple tenants on a single node].
+Multiple Private States is a feature that allows a GoQuorum node to manage more than one private state. The private states are separated logically in the shared database.  This functionality lays the foundation for [supporting multiple tenants on a single node].
 
 ## Key Changes
 
@@ -10,7 +10,7 @@ A private state is identified by a sequence of bytes, referred to as the PSI (Pr
 
 ### Trie of Private States
 
-A Trie of Private States is introduced into GoQuorum to keep track of all private states managed by a node. The PSI is the key in the trie of Private States that maps to the root hash of the corresponding private state. At each block, all affected private states are updated, the trie of private states is updated with any new private state root hashes at their PSI, and a new root of the trie of private states is calculated and mapped to the public block hash.
+A Trie of Private States is introduced into GoQuorum to keep track of all private states managed by a node. The PSI is the key in the Trie of Private States that maps to the root hash of the corresponding private state. At each block, all affected private states are updated, the Trie of Private States is updated with any new private state root hashes at their PSI, and a new root of the Trie of Private States is calculated and mapped to the public block hash.
 
 ### Private State Manager
 
@@ -18,16 +18,16 @@ The purpose of the Private State Manager in GoQuorum is to resolve the PSI based
 
 #### Applying the Transaction
 
-When executing a private transaction, it may be the case that the transaction is addressed to multiple locally managed parties and as a result it may be necessary to apply the transaction to multiple private states.  The Private State Manager resolves each managed party tessera public key to one locally managed private state identifier.
+When executing a private transaction, it may be the case that the transaction is addressed to multiple locally managed parties and as a result it may be necessary to apply the transaction to multiple private states.  The Private State Manager resolves each managed party tessera public key to one private state identifier.
 
 #### User invokes an RPC API
 
-Any RPC API call must be accompanied by a state identifier or authorization token. From the token, the Private State Manager must be able to derive the private state the user is attempting to access.
+Any RPC API call must be accompanied by a private state identifier or authorization token. From the token, the Private State Manager must be able to derive the private state the user is attempting to access.
 
 ### Tessera Resident Groups
 
 MPS uses the concept of [Tessera Resident Groups] (is the group concept going to be added to the Tessera docs???) to map tenants to private states. 
-During Tessera startup, residentGroups are validated to check each tessera key is part of a single resident group. Any key not part of a configured residentGroup is added to the default "private" resident group.
+During Tessera startup, `residentGroups` are validated to check each tessera key is part of a single resident group. Any key not part of a configured group is added to the default "private" resident group.
 
 ``` json
 "residentGroups": [
@@ -48,16 +48,16 @@ The above `residentGroups` defines 2 resident groups (each with 2 members) that 
 
 ``` text
 name - the PSI used to identify the private state the group has access to
-members - the public keys that have access to private state
+members - the public keys that have access to the private state
 ```
 
-View how to [setup residentGroups in Tessera]
+Learn how to [setup residentGroups in Tessera].
 
 ## Configuration Changes
 
 ### GoQuorum
 
-`genesis.json` file has been modified to include `isMPS`.  This value should be set to `true` to enable MPS and `false` to operate as a standalone node. There can be a mix of MPS enabled nodes and standalone nodes in the network.
+The `genesis.json` file has been modified to include `isMPS`.  This value should be set to `true` to enable MPS and `false` to operate as a standalone node. There can be a mix of MPS enabled nodes and standalone nodes in a network.
 
 ### Tessera
 
@@ -80,11 +80,11 @@ If both Tessera and GoQuorum are upgraded but not configured to run MPS, the nod
 ## Tessera Q2T Communication Changes
 
 MPS introduces a new QT2 endpoint `/residentGroups` to return the resident groups defined in Tessera.
-This endpoint is invoked at GoQuorum startup to retrieve all resident groups.  These details are kept in memory in quorum, so the Private State Manager is able to resolve these resident groups to the corresponding private state.
+This endpoint is invoked at GoQuorum startup to retrieve all resident groups.  These details are kept in memory in quorum, so the [Private State Manager] is able to resolve these resident groups to the corresponding private state.
 
 ## Accessing a Private State
 
-Users will need to specify the private state they wish to operate on. For backwards compatibility, if a user connects without specifying the private state, the default "private" identifier will be used.  If a "private" state is not configured, the user will only be operating on an empty read only private state.
+Users will need to specify the private state they wish to operate on. For backwards compatibility, if a user connects without specifying the private state, the default "private" identifier will be used.  If a "private" state is not configured, the user will be operating on an empty read only private state.
 
 In order to specify a private state to operate on the user has 3 options:
 
@@ -130,21 +130,22 @@ for more information about how Tessera manages multiple key pairs.
 
 Tessera will need to be rebuilt from the privacy managers of the standalone nodes it will now support. All transactions from the privacy managers will need to be merged into the new Tessera storage. Provide specific details to how this is achieved????
 
-The Tessera configuration file needs to be updated to contain the relevant residentGroups. The residentGroups should be configured to so that each Tenant has their own private state, which will provide an experience equivalent to when the tenants were running standalone nodes.
+The Tessera configuration file needs to be updated to contain the relevant residentGroups. The `residentGroups` should be configured so that each Tenant has their own private state which will provide an experience equivalent to when the tenants were running standalone nodes.
 
 #### Standalone node upgrade
 
 It may be the case that a tenant of a node wants to upgrade their node to support MPS but continue running as the only tenant.
 
-In this case, the Tenant's Tessera version will need to be upgraded. No residentGroups will need to be added to the configuration, since there is only one Tenant on the node. All of the Tenant's public keys will be automatically added to the default "private" residentGroup upon Tessera startup.
+In this case, the Tenant's Tessera version will need to be upgraded. No `residentGroups` will need to be added to the configuration since there is only one Tenant on the node. All of the Tenant's public keys will be automatically added to the default "private" resident group upon Tessera startup.
 
 ## MPS APIs
 
 ### quorum_privateStates
 
-Returns the list of private states accessible to the user
-On a standalone node it returns the complete list of private states available on the node
-On a multitenant node it only returns the private state(s) the current user is authorized to access
+Returns the list of private states accessible to the user.
+
+On a standalone node it returns the complete list of private states available on the node.
+On a Multi-tenant node it only returns the private state(s) the current user is authorized to access
 
 ### quorum_currentState
 
@@ -157,3 +158,4 @@ Returns the private state the user is operating on
 [steps for migration]: #Migration-Guides
 [Tessera]: https://docs.tessera.consensys.net
 [Tessera Resident Groups]: https://docs.tessera.consensys.net
+[Private State Manager]: #Private-State-Manager
