@@ -6,7 +6,7 @@ run and scale as more tenants join the network.
 
 [Multi-tenancy via Multiple Private States] allows multiple tenants to use the same GoQuorum node, with each tenant having it's own private state(s). Tenants can perform all operations (create/read/write) on any contract in their private state and a single tenant can have access to multiple private states. Multi-tenancy allows for a similar user experience to a user running their own managed node.
 
-The public state remains available publicly to all tenants and private states are logically segregated.
+The public state remains available publicly to all tenants and private states are logically separated.
 
 ```plantuml
 skinparam shadowing false

@@ -10,7 +10,7 @@ A private state is identified by a sequence of bytes, referred to as the PSI (Pr
 
 ### Trie of Private States
 
-A Trie of Private States is introduced into GoQuorum to keep track of all private states managed by a node. The PSI is the key in the Trie of Private States that maps to the root hash of the corresponding private state. At each block, all affected private states are updated, the Trie of Private States is updated with any new private state root hashes at their PSI, and a new root of the Trie of Private States is calculated and mapped to the public block hash.
+A Trie of Private States is introduced into GoQuorum to keep track of all private states managed by a node. The PSI is the key in the Trie of Private States that maps to the root hash of the corresponding private state. At each block, all affected private states are updated and their new root hashes calculated, the Trie of Private States is updated with the new private state root hashes at their PSIs, and a new root of the Trie of Private States is calculated and mapped to the public block hash.
 
 ### Private State Manager
 
@@ -73,7 +73,7 @@ MPS requires [Tessera] version `20.10.3` or later.
 
 For any given node the privacy manager (Tessera) is started first and for that reason we allow the Tessera node to be upgraded with MPS support ahead of the GoQuorum upgrade.  But when the GoQuorum node is upgraded and Geth is reinitialized with `isMPS=true`, the GoQuorum node will validate the version of Tessera running and will fail to start if Tessera is not running an upgraded version.  The GoQuorum node reports an appropriate error message in the console suggesting users to upgrade Tessera first.
 
-If a node wants to upgrade it's Tessera to MPS release (or further) to have other features and fixes but not ready to upgrade GoQuorum, it can do so by running GoQuorum as usual. GoQuorum will continue to function as a standalone node.
+If a node wants to upgrade it's Tessera to the MPS release (or further) to have other features and fixes but is not ready to upgrade GoQuorum, it can do so by running GoQuorum as usual. GoQuorum will continue to function as a standalone node.
 
 If both Tessera and GoQuorum are upgraded but not configured to run MPS, the node will continue to function as a standalone node.
 
@@ -118,7 +118,7 @@ In the future, we will provide a migration tool that will assist with updating t
 
 #### Backwards Compatibility
 
-In the event that a user wants to upgrade the version of GoQuorum, but not use the MPS feature, the user does not need to do anything special.  GoQuorum will continue to operate in "legacy" mode on a single private state.
+In the event that a user wants to upgrade the version of GoQuorum without upgrading Tessera, GoQuorum will continue to operate in "legacy" mode on a single private state. In this case, GoQuorum cannot be run in MPS mode since Tessera has not been upgraded.
 
 ### Tessera
 
@@ -130,7 +130,7 @@ for more information about how Tessera manages multiple key pairs.
 
 Tessera will need to be rebuilt from the privacy managers of the standalone nodes it will now support. All transactions from the privacy managers will need to be merged into the new Tessera storage. Provide specific details to how this is achieved????
 
-The Tessera configuration file needs to be updated to contain the relevant residentGroups. The `residentGroups` should be configured so that each Tenant has their own private state which will provide an experience equivalent to when the tenants were running standalone nodes.
+The Tessera configuration file needs to be updated to contain the relevant residentGroups. The `residentGroups` should be configured so that each Tenant has their own private state. This will provide an experience equivalent to when the tenants were running their separate nodes.
 
 #### Standalone node upgrade
 

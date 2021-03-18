@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-* Set `isMPS` to true in GoQuorum genesis.config
+* Set `isMPS=true` in GoQuorum genesis.config
 * Configure the [JSON RPC Security plugin](JSON-RPC-API-Security.md#configuration)
 * Use [Tessera] version `20.10.3` or later and configure `residentGroups`
 * Run GoQuorum with `--multitenancy` flag
@@ -49,25 +49,21 @@ A network operator's responsibility is to implement the above security model in 
 server by defining [custom scopes] and
 granting them to target clients.
 
-A custom scope representing __`J Investment`__,  
-would be
+A custom scope representing __`J Investment`__ would be:
 
 ```text
 psi://J?self.eoa=0x0
 ```
 
-Custom scopes representing __`G Settlement`__,  
-would be:
+A custom scope representing __`G Settlement`__ would be:
 
 ```text
 psi://G?node.eoa=G_ACC1&self.eoa=Wallet2
 ```
 
-!!! important
-    Clients must also be granted scopes which specify access to the JSON RPC APIs.
+Clients must also be granted scopes which specify access to the JSON RPC APIs.
 
-    Refer to the [JSON RPC Security plugin](../../Reference/Plugins/security/For-Users.md#oauth2-scopes)
-    for more information.
+Refer to the [JSON RPC Security plugin](../../Reference/Plugins/security/For-Users.md#oauth2-scopes) for more information.
 
 In summary, to reflect the above security model, typical scopes being granted to `J Investment`
 would be the following:
@@ -115,6 +111,6 @@ Once a key is added to a resident group, it should remain in that group.
 
 It may be the case that a tenant on an Multi-tenant node wants to move to its own standalone node and should be removed from the Multi-tenant node. What happens here????
 
-[scope values]: ../../Concepts/Multitenancy/Multitenancy.md#access-token-scope
-[custom scopes]: ../../Concepts/Multitenancy/Multitenancy.md#access-token-scope
+[scope values]: ../../Concepts/MultiplePrivateStates/Multitenancy.md#Access-Token-Scope
+[custom scopes]: ../../Concepts/MultiplePrivateStates/Multitenancy.md#Access-Token-Scope
 [Tessera]: https://docs.tessera.consensys.net
