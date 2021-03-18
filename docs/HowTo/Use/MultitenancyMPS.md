@@ -109,8 +109,12 @@ Once a key is added to a residentGroup, it should remain in that group.
 Network Admin executes Tessera keygen to generate the new key
 The Tessera config file must be updated to include the new key in a residentGroup.
 Tessera needs to be restarted to load the new key. When Tessera starts, if the new key was generated but not added to a residentGroup it will be put in the default "private" residentGroup.
-Updates to Authorization Server???
+Updates to the Authorization Server should be made to provide the new Tenant access to the private state defined in the residentGroup configuration.
 
 ## Removing a Tenant from an Multi-tenant Node
 
-It may be the case that a tenant on an MPS node wants to move to its own standalone node. What happens here????
+It may be the case that a tenant on an Multi-tenant node wants to move to its own standalone node and should be removed from the Multi-tenant node. What happens here????
+
+[scope values]: ../../Concepts/Multitenancy/Multitenancy.md#access-token-scope
+[custom scopes]: ../../Concepts/Multitenancy/Multitenancy.md#access-token-scope
+[Tessera]: https://docs.tessera.consensys.net

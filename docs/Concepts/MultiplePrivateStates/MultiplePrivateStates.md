@@ -130,9 +130,7 @@ for more information about how Tessera manages multiple key pairs.
 
 Tessera will need to be rebuilt from the privacy managers of the standalone nodes it will now support. All transactions from the privacy managers will need to be merged into the new Tessera storage. Provide specific details to how this is achieved????
 
-The Tessera configuration file needs to be updated to contain the relevant residentGroups. The residentGroups should be configured to provide an experience equivalent to when the tenants were running as standalone nodes.
-
-Example residentGroup configuration scenario:
+The Tessera configuration file needs to be updated to contain the relevant residentGroups. The residentGroups should be configured to so that each Tenant has their own private state, which will provide an experience equivalent to when the tenants were running standalone nodes.
 
 #### Standalone node upgrade
 

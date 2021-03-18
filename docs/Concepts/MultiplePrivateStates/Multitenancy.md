@@ -138,3 +138,6 @@ to private contracts on private states `PS1` and `PS2` using any self or node ma
 [Multi-tenancy via Multiple Private States]: ../../HowTo/Use/MultitenancyMPS.md
 [configuration changes needed for MPS]: MultiplePrivateStates.md#Configuration-Changes
 [MPS enabled]: MultiplePrivateStates.md#Enable-Multiple-Private-States
+[Authentication Server setup]: #Enterprise-Authorization-Server
+[security plugins documentation]: ../../Reference/Plugins/security/For-Users.md#configuration
+[Tessera]: https://docs.tessera.consensys.net
